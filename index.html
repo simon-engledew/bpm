@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-    <script src="cracked.min.js"></script>
+    <script src="http://unpkg.com/tone"></script>
     <style>
         html, body {
             height: 100%;
@@ -40,7 +40,10 @@
         }
     </style>
     <script>
-        __().sine(800).adsr({id:"metronome", envelope: 0.01}).dac();
+        const synth = new Tone.Synth({
+            oscillator: { type: "sine", modulationFrequency: 0.2 },
+            envelope: { attack: 0, decay: 0.5, sustain: 0, release: 0.1 }
+        }).toDestination();
 
         const pattern = [
             1,1,1,1,1,1,1,1,
@@ -74,30 +77,25 @@
             1,0,0,0,0,0,0,0,
         ];
 
-        let id = undefined;
+        let index = 0;
+
+        new Tone.Loop((time) => {
+            if (pattern[index]) {
+                synth.triggerAttackRelease(440, "8n", time);
+            }
+
+            document.querySelectorAll("ul > li").forEach(function (e, i) {
+                const y = pattern[i + (Math.floor(index / 8) * 8)];
+                e.classList[y ? 'add' : 'remove']('pattern');
+                e.classList[y && i === (index % 8) ? "add" : "remove"]("active");
+            });
+
+            index = (index + 1) % pattern.length;
+        }, "4n").start();
 
         function start() {
-            __.loop("reset");
-            __.loop({ interval: __.min2ms(1) / (parseInt(document.getElementById('bpm').value) || 100) });
-
-            id && clearInterval(id);
-
-            __("#metronome").bind("step",function(index, data, array){
-                if (data) {
-                    __.adsr("trigger");
-                }
-
-                id = setTimeout(function() {
-                    document.querySelectorAll("ul > li").forEach(function (e, i) {
-                        const y = pattern[i + (Math.floor((index - 1) / 8) * 8)];
-                        e.classList[y ? 'add' : 'remove']('pattern');
-                        e.classList[y && i === ((index - 1) % 8) ? "add" : "remove"]("active");
-                    });
-                }, 0);
-            }, pattern);
-
-            __.loop("start");
-            __.play();
+            Tone.getTransport().bpm.value = parseInt(document.getElementById('bpm').value) || 100;
+            Tone.getTransport().start();
         }
     </script>
 </head>
