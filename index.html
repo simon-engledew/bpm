@@ -3,7 +3,7 @@
     <script src="//unpkg.com/tone"></script>
     <style>
         html, body {
-            height: 100%;
+            min-height: 100%;
             width: 100%;
             padding: 0;
             margin: 0;
@@ -11,26 +11,41 @@
         body {
             display: grid;
             justify-items: center;
-            align-content: center;
+        }
+        section {
+            padding: 60px 0;
         }
         ul {
+            margin: 0;
+            padding: 0;
             list-style-type: none;
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
             gap: 10px;
         }
         ul > li {
+            flex: calc(1/8);
             border: solid 2px #fff;
             outline: solid 2px #009;
             width: 50px;
             height: 50px;
             background-color: none;
             border-radius: 5px;
+            background-color: #fff;
+            transition: background-color 100ms ease-in-out;
         }
-        ul > li.pattern {
-            background-color: #eee;
+        ul > li:has(> input:checked) {
+            background-color: #ade;
         }
         ul > li.active {
-            background-color: #009;
+            background-color: #23A !important;
+        }
+        ul > li > input[type="checkbox"] {
+            cursor: pointer;
+            height: 100%;
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
         }
         main {
             margin: 2em 0;
@@ -39,71 +54,68 @@
             text-align: right;
         }
     </style>
+</head>
+<body>
+    <section>
+        <header><label>bpm:</label> <input type="text" value="115" id="bpm" /> <button onclick="toggle(event)">Start</button></header>
+        <main>
+            <ul>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li>
+
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li>
+
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li>
+
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li> <li><input type="checkbox" /></li>
+                <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li> <li><input type="checkbox" checked /></li>
+            </ul>
+        </main>
+    </section>
     <script>
         const synth = new Tone.Synth({
             oscillator: { type: "sine", modulationFrequency: 0.2 },
-            envelope: { attack: 0, decay: 0.5, sustain: 0, release: 0.1 }
+            envelope: { attack: 0, decay: 0.5, sustain: 0, release: 0.1 },
         }).toDestination();
-
-        const pattern = [
-            1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,
-            1,1,1,1,1,1,1,1,
-
-            1,0,1,0,1,0,1,0,
-            1,0,1,0,1,0,1,0,
-            1,0,1,0,1,0,1,0,
-            1,1,1,1,1,1,1,1,
-
-            1,0,0,0,1,0,0,0,
-            1,0,0,0,1,0,0,0,
-            1,0,0,0,1,0,0,0,
-            1,1,1,1,1,1,1,1,
-
-            1,0,0,0,0,0,0,0,
-            1,0,0,0,0,0,0,0,
-            1,0,0,0,0,0,0,0,
-            1,0,0,0,0,0,0,0,
-        ];
 
         let index = 0;
 
         new Tone.Loop((time) => {
+            const pattern = [...document.querySelectorAll("ul > li")].map(function (e, i) {
+                const checked = e.querySelector("input").checked;
+
+                e.classList[checked && i === index ? "add" : "remove"]("active");
+
+                return checked;
+            });
+
             if (pattern[index]) {
                 synth.triggerAttackRelease(440, "8n", time);
             }
 
-            document.querySelectorAll("ul > li").forEach(function (e, i) {
-                const y = pattern[i + (Math.floor(index / 8) * 8)];
-                e.classList[y ? 'add' : 'remove']('pattern');
-                e.classList[y && i === (index % 8) ? "add" : "remove"]("active");
-            });
-
             index = (index + 1) % pattern.length;
         }, "4n").start();
 
-        function start() {
-            Tone.getTransport().bpm.value = parseInt(document.getElementById('bpm').value) || 100;
-            Tone.getTransport().start();
+        function toggle(e) {
+            const transport = Tone.getTransport()
+            const started = transport.state == "started";
+            if (started) {
+                transport.stop();
+            } else {
+                transport.bpm.value = parseInt(document.getElementById('bpm').value) || 100;
+                transport.start();
+            }
+            e.target.innerText = started ? "Start" : "Stop";
         }
     </script>
-</head>
-<body>
-    <section>
-        <header><label>bpm:</label> <input type="text" value="115" id="bpm" /></header>
-        <main>
-            <ul>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-            </ul>
-        </main>
-        <footer><button onclick="start()">Start</button></footer>
-    </section>
 </body>
