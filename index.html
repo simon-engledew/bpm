@@ -20,15 +20,11 @@
     <script>
         __().sine(800).adsr({id:"kick", envelope: 0.01}).dac();
 
-        const min = 1000 * 60;
-
-        const i = (min / 115);
+        const min = __.min2ms(1);
 
         function bpm() {
             return min / parseInt(document.getElementById('bpm').value);
         }
-
-        __.loop({steps:8, interval: i});
 
         let mod = -1;
         let cycles = -1;
@@ -45,7 +41,7 @@
         __("#kick").bind("step",function(index,data,array){
             if (index === 0) {
                 cycles++;
-                if (cycles % 4 === 0) {
+                if (cycles % 2 === 0) {
                     mod = (mod + 1) % ticks.length;
                 }
             }
@@ -55,7 +51,7 @@
             }
 
             setTimeout(function() {
-                document.querySelectorAll("ul > li").forEach(function (e, i) { e.classList[i !== index ? 'remove' : 'add']("active") });
+                document.querySelectorAll("ul > li").forEach(function (e, i) { e.classList[(i + 1) % 8 === index ? 'add' : 'remove']("active") });
             }, 0);
         },[1,2,3,4,5,6,7,8]);
 
