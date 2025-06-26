@@ -2,73 +2,120 @@
 <head>
     <script src="cracked.min.js"></script>
     <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        body {
+            display: grid;
+            justify-items: center;
+            align-content: center;
+        }
         ul {
             list-style-type: none;
             display: flex;
             gap: 10px;
         }
         ul > li {
-            border: solid 2px #009;
+            border: solid 2px #fff;
+            outline: solid 2px #009;
             width: 50px;
             height: 50px;
             background-color: none;
+            border-radius: 5px;
+        }
+        ul > li.pattern {
+            background-color: #eee;
         }
         ul > li.active {
             background-color: #009;
         }
+        main {
+            margin: 2em 0;
+        }
+        header, footer {
+            text-align: right;
+        }
     </style>
     <script>
-        __().sine(800).adsr({id:"kick", envelope: 0.01}).dac();
+        __().sine(800).adsr({id:"metronome", envelope: 0.01}).dac();
 
-        const min = __.min2ms(1);
+        const pattern = [
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
 
-        function bpm() {
-            return min / parseInt(document.getElementById('bpm').value);
-        }
+            1,0,1,0,1,0,1,0,
+            1,0,1,0,1,0,1,0,
+            1,0,1,0,1,0,1,0,
+            1,0,1,0,1,0,1,0,
 
-        let mod = -1;
-        let cycles = -1;
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
 
-        const ticks = [
-            [1,1,1,1,1,1,1,1],
-            [1,0,1,0,1,0,1,0],
-            [1,1,1,1,1,1,1,1],
-            [1,0,0,0,1,0,0,0],
-            [1,1,1,1,1,1,1,1],
-            [1,0,0,0,0,0,0,0],
+            1,0,0,0,1,0,0,0,
+            1,0,0,0,1,0,0,0,
+            1,0,0,0,1,0,0,0,
+            1,0,0,0,1,0,0,0,
+
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
+            1,1,1,1,1,1,1,1,
+
+            1,0,0,0,0,0,0,0,
+            1,0,0,0,0,0,0,0,
+            1,0,0,0,0,0,0,0,
+            1,0,0,0,0,0,0,0,
         ];
 
-        __("#kick").bind("step",function(index,data,array){
-            if (index === 0) {
-                cycles++;
-                if (cycles % 2 === 0) {
-                    mod = (mod + 1) % ticks.length;
+        let id = undefined;
+
+        function start() {
+            __.loop("reset");
+            __.loop({ interval: __.min2ms(1) / (parseInt(document.getElementById('bpm').value) || 100) });
+
+            id && clearInterval(id);
+
+            __("#metronome").bind("step",function(index, data, array){
+                if (data) {
+                    __.adsr("trigger");
                 }
-            }
 
-            if (ticks[mod][index]) {
-                __.adsr("trigger");
-            }
+                id = setTimeout(function() {
+                    document.querySelectorAll("ul > li").forEach(function (e, i) {
+                        const y = pattern[i + (Math.floor((index - 1) / 8) * 8)];
+                        e.classList[y ? 'add' : 'remove']('pattern');
+                        e.classList[y && i === ((index - 1) % 8) ? "add" : "remove"]("active");
+                    });
+                }, 0);
+            }, pattern);
 
-            setTimeout(function() {
-                document.querySelectorAll("ul > li").forEach(function (e, i) { e.classList[(i + 1) % 8 === index ? 'add' : 'remove']("active") });
-            }, 0);
-        },[1,2,3,4,5,6,7,8]);
-
-        __.loop("start");
+            __.loop("start");
+            __.play();
+        }
     </script>
 </head>
 <body>
-    <p><label>bpm:</label> <input type="text" value="115" id="bpm" /></p>
-    <ul>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
-    <button onclick="__.loop({interval: bpm()});__().play()">Start Sine Wave</button>
+    <section>
+        <header><label>bpm:</label> <input type="text" value="115" id="bpm" /></header>
+        <main>
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </main>
+        <footer><button onclick="start()">Start</button></footer>
+    </section>
 </body>
