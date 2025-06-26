@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<head>
+    <script src="cracked.min.js"></script>
+    <style>
+        ul {
+            list-style-type: none;
+            display: flex;
+            gap: 10px;
+        }
+        ul > li {
+            border: solid 2px #009;
+            width: 50px;
+            height: 50px;
+            background-color: none;
+        }
+        ul > li.active {
+            background-color: #009;
+        }
+    </style>
+    <script>
+        __().sine(800).adsr({id:"kick", envelope: 0.01}).dac();
+
+        const min = 1000 * 60;
+
+        const i = (min / 115);
+
+        function bpm() {
+            return min / parseInt(document.getElementById('bpm').value);
+        }
+
+        __.loop({steps:8, interval: i});
+
+        let mod = -1;
+        let cycles = -1;
+
+        const ticks = [
+            [1,1,1,1,1,1,1,1],
+            [1,0,1,0,1,0,1,0],
+            [1,1,1,1,1,1,1,1],
+            [1,0,0,0,1,0,0,0],
+            [1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0],
+        ];
+
+        __("#kick").bind("step",function(index,data,array){
+            if (index === 0) {
+                cycles++;
+                if (cycles % 4 === 0) {
+                    mod = (mod + 1) % ticks.length;
+                }
+            }
+
+            if (ticks[mod][index]) {
+                __.adsr("trigger");
+            }
+
+            setTimeout(function() {
+                document.querySelectorAll("ul > li").forEach(function (e, i) { e.classList[i !== index ? 'remove' : 'add']("active") });
+            }, 0);
+        },[1,2,3,4,5,6,7,8]);
+
+        __.loop("start");
+    </script>
+</head>
+<body>
+    <p><label>bpm:</label> <input type="text" value="115" id="bpm" /></p>
+    <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+    <button onclick="__.loop({interval: bpm()});__().play()">Start Sine Wave</button>
+</body>
