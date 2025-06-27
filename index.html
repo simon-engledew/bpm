@@ -83,6 +83,10 @@
         </main>
     </section>
     <script>
+        if ("wakeLock" in navigator) {
+            navigator.wakeLock.request("screen");
+        }
+
         const synth = new Tone.Synth({
             oscillator: { type: "sine", modulationFrequency: 0.2 },
             envelope: { attack: 0, decay: 0.5, sustain: 0, release: 0.1 },
